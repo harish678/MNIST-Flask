@@ -17,7 +17,7 @@ DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 app = Flask(__name__)
 
-memory = joblib.Memory(location="../checkpoint/", verbose=0)
+memory = joblib.Memory(location="checkpoint/", verbose=0)
 
 
 def autolabel(rects, ax):
