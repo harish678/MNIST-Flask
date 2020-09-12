@@ -234,12 +234,13 @@ def test_loop_fn(test, model, device):
     axes = axes.ravel()
 
     for i in np.arange(0, L * W):
-        axes[i].imshow(test[i].reshape(28, 28))
+        axes[i].imshow(test[i].cpu().detach().numpy().reshape(28, 28))
         axes[i].set_title("Prediction Class = {:0.1f}".format(predlabel[i]))
         axes[i].axis('off')
 
     plt.suptitle('Predictions on Test Data')
     plt.subplots_adjust(wspace=0.5)
+    plt.show()
 
     return predlabel
 
@@ -296,10 +297,9 @@ def run(args):
     # instatiate model and sending it to device
     model = MnistModel(classes=classes).to(device)
     # instantiate optimizer
-    optimizer = optim.Adam(model.parameters(), lr=args.lr)
+    optimizer = optim.SGD(model.parameters(), lr=args.lr)
     # instantiate scheduler
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, patience=3, factor=0.5, min_lr=1e-6)
+    scheduler = optim.lr_scheduler.CyclicLR(optimizer, base_lr=args.lr, max_lr=0.1)
 
     print('Training..')
     best_accuracy = 0
@@ -317,17 +317,16 @@ def run(args):
             best_accuracy = accuracy
 
     # Predict on test data
-    preds = test_loop_fn(df_test, model, device)
-    return preds
+    return test_loop_fn(df_test, model, device)
 
 
 if __name__ == "__main__":
     # variables for training model
     @dataclass
     class Args:
-        lr: float = 3e-3
+        lr: float = 3e-5
         RANDOM_STATE: int = 42
-        NUM_EPOCHS: int = 15
+        NUM_EPOCHS: int = 5
         BATCH_SIZE: int = 100
         target: str = 'label'
         data_path: str = 'data/'
@@ -335,4 +334,4 @@ if __name__ == "__main__":
 
     arg = Args()
     random_seed(arg.RANDOM_STATE)
-    preds = run(args=arg)
+    test_preds = run(args=arg)
