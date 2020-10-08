@@ -4,6 +4,7 @@ from torch.utils import data
 
 from utils import *
 import pandas as pd
+import numpy as np
 from typing import Union
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
@@ -299,7 +300,8 @@ def run(args):
     # instantiate optimizer
     optimizer = optim.SGD(model.parameters(), lr=args.lr)
     # instantiate scheduler
-    scheduler = optim.lr_scheduler.CyclicLR(optimizer, base_lr=args.lr, max_lr=0.1)
+    scheduler = optim.lr_scheduler.CyclicLR(
+        optimizer, base_lr=args.lr, max_lr=0.1)
 
     print('Training..')
     best_accuracy = 0
