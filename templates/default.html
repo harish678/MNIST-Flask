@@ -15,6 +15,7 @@
     function init() {
         canvas = document.getElementById('can');
         document.getElementById("probs").style.display = "none";
+        document.getElementById("interpret").style.display = "none";
         ctx = canvas.getContext("2d");
         w = canvas.width;
         h = canvas.height;
@@ -49,11 +50,15 @@
         document.getElementById("canvasimg").style.display = "none";
         document.getElementById("prediction").style.display = "none";
         document.getElementById("probs").style.display = "none";
+        document.getElementById("interpret").style.display = "none";
+        b = document.getElementsByTagName("body")[0];
+        b.querySelectorAll('a').forEach(n => n.remove());
     }
 
     function save() {
         document.getElementById("prediction").style.display = "block";
         document.getElementById("probs").style.display = "block";
+        document.getElementById("interpret").style.display = "block";
         var final_image = canvas.toDataURL();
         var a = document.createElement('a');
         a.href = final_image;
@@ -68,7 +73,8 @@
                 endresult = JSON.parse(JSON.stringify(response))
                 console.log(endresult)
                 $('#prediction').html('Prediction is: <span id="text">' + endresult.data + '</span>')
-                $('#probs').prop('src', 'data:image/png;base64,' + endresult.encoded)
+                $('#probs').prop('src', 'data:image/png;base64,' + endresult.probencoded)
+                $('#interpret').prop('src', 'data:image/png;base64,' + endresult.interpretencoded)
             }
         });
     }
@@ -107,9 +113,7 @@
 
 <body onload="init()">
     <center>
-        <br>
         <h1> Handwritten Digit Recognition using <span id="text">PyTorch CNN</span></h1>
-        <br>
     </center>
     <div id="side">
         <h4 id='text'> Draw a Digit in the center of the Box.. </h4>
@@ -122,8 +126,9 @@
             <h3 id="prediction"></h3>
         </div>
     </div>
-    <div id="side">
-        <img id="probs" src="" alt="" height="65%" width="75%">
+    <div>
+        <img id="probs" src="" alt="" height="45%" width="35%">
+        <img id="interpret" src="" alt="" height="45%" width="35%">
     </div>
 </body>
 

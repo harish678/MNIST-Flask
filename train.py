@@ -5,10 +5,10 @@ from torch.utils import data
 from utils import *
 import pandas as pd
 import numpy as np
+from os import makedirs
 from typing import Union
 import matplotlib.pyplot as plt
 from dataclasses import dataclass
-from sklearn.model_selection import train_test_split
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -333,6 +333,9 @@ if __name__ == "__main__":
         target: str = 'label'
         data_path: str = 'data/'
         model_path: str = 'checkpoint/mnist.pt'
+
+        def __post_init__(self):
+            makedirs('checkpoint', exist_ok=True)
 
     arg = Args()
     random_seed(arg.RANDOM_STATE)
